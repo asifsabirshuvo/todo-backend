@@ -1,12 +1,42 @@
-const { Todo } = require("./sequelize");
+const { Todo } = require("./../sequelize");
 
-async function createTodo() {
-    return await Todo.findAll();
+async function allTodo(page, limit) {
+    console.log(page, limit);
+    const todos = await Todo.findAll({ offset: (page - 1) * limit, limit: limit });
+    return {
+        status: 200,
+        success: true,
+        data: todos
+    };
+
 }
 
-async function
+async function createTodo(todoTitle) {
+    const todoCreated = await Todo.create({ title: todoTitle });
+    return {
+        status: 201,
+        success: true,
+        data: todoCreated.dataValues
+    };
+}
+
+async function updateTodo(id, status) {
+    let existingTodo = await Todo.findAll({ limit: 1, where: { id: id } });
+    console.log(existingTodo);
+    const todoUpdated = await Todo.update({ status: status }, { where: { id: id } });
+    existingTodo[0].status = status;
+    if (todoUpdated[0]) {
+        return {
+            status: 201,
+            success: true,
+            data: existingTodo[0]
+        };
+    }
+}
 
 
 module.exports = {
-    todoCreated
-}
+    allTodo,
+    createTodo,
+    updateTodo
+};

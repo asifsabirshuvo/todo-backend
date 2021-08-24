@@ -1,14 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const rideService = require('./../service/rideService');
-
-const { createRideValidator } = require('./../validators/createRideValidator');
-const { findRideValidator } = require('./../validators/findRideValidator');
-const { requestRideValidator } = require('./../validators/requestRideValidator');
-const { endRideValidator } = require('./../validators/endRideValidator');
-
-const { check, validationResult } = require("express-validator"); //to validate form
-const { query, queryValidationResult } = require("express-validator"); //to validate form
+const todoService = require('./../service/todo.service');
 
 
 router.get("/", async(req, res) => {
@@ -16,65 +8,59 @@ router.get("/", async(req, res) => {
     const page = parseInt(req.query.page ? req.query.page : 1);
     const limit = parseInt(req.query.limit ? ((req.query.limit <= 10) ? req.query.limit : 10) : 10);
 
-    const data = await rideService.findRides(reqFilters);
-    return res.status(data.status).json({
-        success: data.success,
-        message: data.message
+    const result = await todoService.allTodo(page, limit);
+    console.log(result);
+    return res.status(result.status).json({
+        success: result.success,
+        data: result.data
     });
-
-}
-
 });
 
 
-router.post("/request-ride", requestRideValidator,
-    async(req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({
-                success: false,
-                message: errors.array(),
-            });
-        } else {
-            if (parseInt(req.body.seatQuantity) > 2) {
-                return res.status(400).json({
-                    success: false,
-                    message: 'maximum 2 seats requests are allowed'
-                });
-            }
-            const data = await rideService.requestRide(req.body);
-            return res.status(data.status).json({
-                success: data.success,
-                message: data.message
-            });
-        }
-    }
-);
 
-router.post("/end-ride", endRideValidator,
-    async(req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({
-                success: false,
-                message: errors.array(),
-            });
-        } else {
-            const data = await rideService.endRide(req.body);
-            return res.status(data.status).json({
-                success: data.success,
-                message: data.message
-            });
-        }
-    }
-);
+router.post("/", async(req, res) => {
 
-router.get("/ride-stats", async(req, res) => {
-    const data = await rideService.rideStats();
-    return res.status(data.status).json({
-        success: data.success,
-        message: data.message
+    const todoTitle = req.body.title;
+    if (todoTitle == undefined) {
+        return res.status(400).json({
+            success: false,
+            data: 'Please send title'
+        });
+    }
+
+    const result = await todoService.createTodo(todoTitle);
+    console.log(result);
+    return res.status(result.status).json({
+        success: result.success,
+        data: result.data
     });
 
 });
+
+
+router.patch("/", async(req, res) => {
+
+    const statusEnum = ['pending', 'completed'];
+    const id = parseInt(req.body.id);
+    const status = req.body.status;
+    console.log(id);
+    console.log(status);
+    if (isNaN(id) || status == undefined || !statusEnum.includes(status)) {
+        return res.status(400).json({
+            success: false,
+            data: 'Please send valid status and id'
+        });
+    }
+
+
+    const result = await todoService.updateTodo(parseInt(id), status);
+    console.log(result);
+    return res.status(result.status).json({
+        success: result.success,
+        data: result.data
+    });
+
+});
+
+
 module.exports = router;

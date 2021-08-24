@@ -10,7 +10,9 @@ const sequelize = new Sequelize('test', 'postgres', 'postgres', {
         min: 0,
         acquire: 30000,
         idle: 10000
-    }
+    },
+    query: { raw: true }
+
 });
 
 const Todo = todoModel(sequelize, Sequelize);

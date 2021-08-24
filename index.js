@@ -9,7 +9,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.raw());
 const todoController = require('./controller/todoController');
-const subTaskController = require('./controller/subTaskController');
+const subTaskController = require('./controller/subtaskController');
 const port = 3000;
 
 //home router
@@ -18,7 +18,7 @@ app.get('/api/v1/health', (req, res) => {
 });
 
 app.use('/api/v1/todo/', todoController);
-app.use('/api/v1/subtask/', subtaskController);
+app.use('/api/v1/subtask/', subTaskController);
 
 //default error routers
 app.use((req, res) => {
