@@ -8,13 +8,13 @@ module.exports = (sequelize, type) => {
             autoIncrement: true
         },
         title: {
-            type: type.STRING,
-            notNull: true // won't allow null
+            type: type.STRING
         },
         status: {
             type: Sequelize.ENUM('pending', 'completed'),
             defaultValue: 'pending'
         },
+
         created_on: {
             type: type.DATE,
             defaultValue: Sequelize.NOW

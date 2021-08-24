@@ -1,8 +1,16 @@
-const { Todo } = require("./../sequelize");
+const { Todo, SubTask } = require("./../sequelize");
 
 async function allTodo(page, limit) {
     console.log(page, limit);
-    const todos = await Todo.findAll({ offset: (page - 1) * limit, limit: limit });
+    const todos = await Todo.findAll({
+        offset: (page - 1) * limit,
+        limit: limit,
+        include: [{
+            model: SubTask,
+            as: "subtasks"
+        }]
+    });
+
     return {
         status: 200,
         success: true,

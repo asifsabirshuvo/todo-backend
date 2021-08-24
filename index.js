@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const { Todo, SubTask } = require("./sequelize");
@@ -8,9 +9,8 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.raw());
-const todoController = require('./controller/todoController');
-const subTaskController = require('./controller/subtaskController');
-const port = 3000;
+const todoController = require('./controller/todo.controller');
+const subTaskController = require('./controller/subtask.controller');
 
 //home router
 app.get('/api/v1/health', (req, res) => {
@@ -25,19 +25,8 @@ app.use((req, res) => {
     res.status(404).send('404 route not found!');
 });
 
-// create a user
-app.post("/api/todo", async(req, res) => {
-    console.log(req.body);
-    const todoCreated = await Todo.create(req.body);
-    res.json(todoCreated);
-});
-// get all users
-app.get("/api/todo", async(req, res) => {
-    const todo = await Todo.findAll();
-    res.json(todo);
-});
 
 
-app.listen(port, () => {
-    console.log(`Running on http://localhost:${port}`);
+app.listen(process.env.PORT, () => {
+    console.log(`Running on http://localhost:${process.env.PORT}`);
 });

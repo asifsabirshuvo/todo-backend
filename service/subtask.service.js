@@ -1,0 +1,52 @@
+const { SubTask, Todo } = require("./../sequelize");
+
+
+async function createSubtask(subtaskTitle, todoId) {
+    const existingTodo = await Todo.findAll({
+        where: { id: todoId },
+        raw: true
+    });
+    if (existingTodo.length < 1) {
+        return {
+            status: 400,
+            success: false,
+            data: 'Todo does not exist'
+        };
+
+    }
+    const subtaskCreated = await SubTask.create({ title: subtaskTitle, todoId: todoId });
+
+    return {
+        status: 201,
+        success: true,
+        data: subtaskCreated.dataValues
+    };
+}
+
+async function updateSubtask(id, status) {
+    let existingSubtask = await SubTask.findAll({ limit: 1, where: { id: id } });
+
+    if (existingSubtask.length < 1) {
+        return {
+            status: 400,
+            success: false,
+            data: 'Subtask does not exist'
+        };
+    }
+    const todoUpdated = await SubTask.update({ status: status }, { where: { id: id } });
+    existingSubtask[0].status = status;
+    if (todoUpdated[0]) {
+        return {
+            status: 201,
+            success: true,
+            data: existingSubtask[0]
+        };
+    }
+
+}
+
+
+module.exports = {
+    createSubtask,
+    updateSubtask
+};
