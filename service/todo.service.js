@@ -32,6 +32,9 @@ async function updateTodo(id, status) {
     let existingTodo = await Todo.findAll({ limit: 1, where: { id: id } });
     console.log(existingTodo);
     const todoUpdated = await Todo.update({ status: status }, { where: { id: id } });
+    //update its children too
+    await SubTask.update({ status: status }, { where: { todoId: id } });
+
     existingTodo[0].status = status;
     if (todoUpdated[0]) {
         return {
