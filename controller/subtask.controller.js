@@ -15,7 +15,6 @@ router.post("/", async(req, res) => {
     }
 
     const result = await subtaskService.createSubtask(subtaskTitle, todoId);
-    console.log(result);
     return res.status(result.status).json({
         success: result.success,
         data: result.data
@@ -29,8 +28,6 @@ router.patch("/", async(req, res) => {
     const statusEnum = ['pending', 'completed'];
     const id = parseInt(req.body.id);
     const status = req.body.status;
-    console.log(id);
-    console.log(status);
     if (isNaN(id) || status == undefined || !statusEnum.includes(status)) {
         return res.status(400).json({
             success: false,
@@ -40,7 +37,6 @@ router.patch("/", async(req, res) => {
 
 
     const result = await subtaskService.updateSubtask(parseInt(id), status);
-    console.log(result);
     return res.status(result.status).json({
         success: result.success,
         data: result.data

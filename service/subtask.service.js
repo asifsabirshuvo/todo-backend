@@ -25,7 +25,6 @@ async function createSubtask(subtaskTitle, todoId) {
 
 async function updateSubtask(id, status) {
     let existingSubtask = await SubTask.findAll({ limit: 1, where: { id: id } });
-    console.log('---------------------');
     if (existingSubtask.length < 1) {
         return {
             status: 400,
@@ -41,9 +40,7 @@ async function updateSubtask(id, status) {
     */
     let undoneSubtask = await SubTask.findAll({ where: { todoId: existingSubtask[0].todoId, status: 'pending' } });
 
-    console.log(undoneSubtask.length);
     if (undoneSubtask.length) {
-        console.log(existingSubtask[0].todoId);
         await todoService.updateTodoWithoutChildren(existingSubtask[0].todoId, 'pending');
     } else {
         await todoService.updateTodoWithoutChildren(existingSubtask[0].todoId, 'completed');
