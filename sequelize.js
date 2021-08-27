@@ -23,13 +23,16 @@ Todo.hasMany(SubTask, { as: 'subtasks', foreignKey: 'todoId' });
 then comment again.otherwise it will drop current table and create again.
 you will lose existing data then  
 */
+async function generateTables() {
+    await sequelize.sync({ force: true })
+        .then(() => {
+            console.log(`Database & tables created!`);
+        });
+}
 
-// sequelize.sync({ force: true })
-//     .then(() => {
-//         console.log(`Database & tables created!`);
-//     });
 
 module.exports = {
     Todo,
-    SubTask
+    SubTask,
+    generateTables
 };
