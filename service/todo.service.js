@@ -48,9 +48,15 @@ async function updateTodo(id, status) {
     }
 }
 
+async function updateTodoWithoutChildren(id, status) {
+    await Todo.update({ status: status }, { where: { id: id } });
+    return true;
+}
+
 
 module.exports = {
     allTodo,
     createTodo,
-    updateTodo
+    updateTodo,
+    updateTodoWithoutChildren
 };

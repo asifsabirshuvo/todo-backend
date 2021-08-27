@@ -1,5 +1,5 @@
 const { SubTask, Todo } = require("./../sequelize");
-
+const todoService = require('./todo.service');
 
 async function createSubtask(subtaskTitle, todoId) {
     const existingTodo = await Todo.findAll({
@@ -25,7 +25,7 @@ async function createSubtask(subtaskTitle, todoId) {
 
 async function updateSubtask(id, status) {
     let existingSubtask = await SubTask.findAll({ limit: 1, where: { id: id } });
-
+    console.log('---------------------');
     if (existingSubtask.length < 1) {
         return {
             status: 400,
@@ -35,9 +35,23 @@ async function updateSubtask(id, status) {
     }
     const todoUpdated = await SubTask.update({ status: status }, { where: { id: id } });
     existingSubtask[0].status = status;
+
+    /*sometimes all the subtask of a todo maybe completed
+    in such case we have to set the main todo as completed too 
+    */
+    let undoneSubtask = await SubTask.findAll({ where: { todoId: existingSubtask[0].todoId, status: 'pending' } });
+
+    console.log(undoneSubtask.length);
+    if (undoneSubtask.length) {
+        console.log(existingSubtask[0].todoId);
+        await todoService.updateTodoWithoutChildren(existingSubtask[0].todoId, 'pending');
+    } else {
+        await todoService.updateTodoWithoutChildren(existingSubtask[0].todoId, 'completed');
+    }
+
     if (todoUpdated[0]) {
         return {
-            status: 201,
+            status: 200,
             success: true,
             data: existingSubtask[0]
         };
