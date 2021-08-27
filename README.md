@@ -5,13 +5,33 @@
 * for more security the primary keys or foreign key could be replaced by unique random keys but for time contraint I didn't do such sanitizations.
 
 
-## getting seed test data
+## create db and table
 
-##how to run first time
+install dependency first
+
+```
+npm install
+```
+
+follow .env file. we have a db name test. you may change it. we are following as test.
+create a postgres database with name: test 
+run this command to generate tables or relation from backend app:
+``
+npm test
 
 ```
 
-npm install
-nodemon index.js
+
+## getting seed test data
+
+```
+psql test < tododb.sql
+```
+
+
+##for running the app anytime
+
+```
+npm start
 
 ```
