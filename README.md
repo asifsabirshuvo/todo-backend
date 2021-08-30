@@ -1,4 +1,4 @@
-##notes
+## notes
 
 * Did not use validator libraries as the api is pretty small
 * didn't write dto or response serializers
@@ -14,9 +14,11 @@ npm install
 ```
 
 follow .env file. we have a db name test. you may change it. we are following as test.
-create a postgres database with name: test 
+create a postgres database with name: test
+couldn't write test suites for time constraints.
 run this command to generate tables or relation from backend app:
-``
+
+```
 npm test
 
 ```
@@ -29,7 +31,7 @@ psql test < tododb.sql
 ```
 
 
-##for running the app anytime
+## for running the app anytime at 3000 port
 
 ```
 npm start
